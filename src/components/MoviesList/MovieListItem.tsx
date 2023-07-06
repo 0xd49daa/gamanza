@@ -1,17 +1,17 @@
-import { ListItemButton, ListItemText } from "@mui/material";
-import { Movie } from "../../types";
+import { ListItemButton, ListItemText } from "@mui/material"
+import { Movie } from "../../types"
 
 type MovieListItemProps = {
-  movie: Movie;
-};
+  movie: Movie
+}
 
 export default function MovieListItem(props: MovieListItemProps) {
   return (
     <ListItemButton>
       <ListItemText
         primary={props.movie.titleText.text}
-        secondary={props.movie.releaseYear.year}
+        secondary={`${props.movie.titleType.id} / ${props.movie.releaseYear.year}`}
       />
     </ListItemButton>
-  );
+  )
 }

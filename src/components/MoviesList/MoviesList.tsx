@@ -5,6 +5,7 @@ import { FetchMoviesActionCreator } from "../../actions"
 import { getMoviesPage } from "../../selectors"
 import MovieListItem from "./MovieListItem"
 import Paginator from "./Paginator"
+import SearchPanel from "../SearchPanel/SearchPanel"
 
 function MoviesList() {
   const dispatch = useDispatch()
@@ -16,6 +17,7 @@ function MoviesList() {
 
   return (
     <>
+      <SearchPanel />
       <List>
         {movies.map((movie) => {
           return <MovieListItem key={movie.id} movie={movie} />

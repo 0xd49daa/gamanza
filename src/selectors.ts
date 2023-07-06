@@ -4,6 +4,10 @@ export function getMovies(state: State) {
   return state.movies
 }
 
+export function getNextUrl(state: State) {
+  return state.nextUrl
+}
+
 export function getMoviesPage(state: State) {
   const page = getPage(state)
   const pageSize = getPageSize(state)

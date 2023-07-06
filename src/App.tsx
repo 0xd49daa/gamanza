@@ -1,28 +1,24 @@
-import Layout from "./components/Layout/Layout";
-import MoviesList from "./components/MoviesList/MoviesList";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { useEffect } from "react";
+import CssBaseline from "@mui/material/CssBaseline"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { RouterProvider } from "react-router-dom"
+import Layout from "./components/Layout/Layout"
+import router from "./router"
 
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
-});
+})
 
 function App() {
-  useEffect(() => {
-    console.log("app");
-  }, []);
-
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Layout>
-        <MoviesList />
+        <RouterProvider router={router} />
       </Layout>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App

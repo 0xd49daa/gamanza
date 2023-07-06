@@ -1,25 +1,31 @@
 export type Movie = {
-  id: string;
+  id: string
   primaryImage: {
-    url: string;
-  };
+    url: string
+  }
   titleText: {
-    text: string;
-  };
+    text: string
+  }
+  titleType: {
+    id: string
+    isSeries: boolean
+    isEpisode: boolean
+  }
   releaseYear: {
-    year: number;
-  };
-};
+    year: number
+  }
+}
 
 export type FetchMoviesResponse = {
-  page: number;
-  next: string;
-  entries: number;
-  results: Movie[];
-};
+  page: number
+  next: string
+  entries: number
+  results: Movie[]
+}
 
 export type State = {
-  page: number;
-  pageSize: number;
-  movies: Movie[];
-};
+  page: number
+  pageSize: number
+  movies: Movie[]
+  nextUrl: string | null
+}

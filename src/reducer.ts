@@ -3,11 +3,12 @@ import { State } from "./types"
 import {
   AddMoviesActionCreator,
   SetMoviesActionCreator,
+  SetNextUrlActionCreator,
   SetPageActionCreator,
   SetPageSizeActionCreator,
 } from "./actions"
 
-const initialState = { page: 1, pageSize: 10, movies: [] } as State
+const initialState = { page: 1, pageSize: 10, movies: [], nextUrl: null } as State
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(AddMoviesActionCreator, (state, action) => {
@@ -21,6 +22,9 @@ const reducer = createReducer(initialState, (builder) => {
   })
   builder.addCase(SetPageSizeActionCreator, (state, action) => {
     state.pageSize = action.payload
+  })
+  builder.addCase(SetNextUrlActionCreator, (state, action) => {
+    state.nextUrl = action.payload
   })
 })
 

@@ -3,11 +3,13 @@ import {
   AddMoviesActionCreator,
   FetchMoviesActionCreator,
   SetMoviesActionCreator,
+  SetNextUrlActionCreator,
   SetPageActionCreator,
   SetPageSizeActionCreator,
 } from "../actions"
 import { FetchMoviesResponse, Movie } from "../types"
 import { getMovies, getPage, getPageSize } from "../selectors"
+import { cleanUpObject, getSearchParams, isEqual } from "../utils"
 
 const options = {
   method: "GET",
@@ -17,42 +19,52 @@ const options = {
   },
 }
 
-async function makeRequest(page: number, pageSize: number) {
-  const url = new URL("https://moviesdatabase.p.rapidapi.com/titles")
-  url.search = new URLSearchParams({
-    limit: pageSize.toString(),
-    page: page.toString(),
-  }).toString()
+async function makeRequest(searchParams: any) {
+  const url = new URL("/titles", import.meta.env.VITE_API_URL)
+  url.search = new URLSearchParams(cleanUpObject(searchParams)).toString()
 
   const response: Response = await fetch(url, options)
   const result: FetchMoviesResponse = await response.json()
 
-  return result.results
+  return result
 }
 
-export default function* fetchMovies(
-  action: ReturnType<typeof FetchMoviesActionCreator>
-) {
+let previous: any = null
+
+export default function* fetchMovies(action: ReturnType<typeof FetchMoviesActionCreator>) {
   try {
+    const params = getSearchParams()
+    const isParamsChanged = !previous || !isEqual(params, previous)
+
+    previous = params
+
     const currentPageSize: number = yield select(getPageSize)
     const nextPageSize: number = action.payload?.pageSize || currentPageSize
     const isPageSizeChanged: boolean = nextPageSize !== currentPageSize
 
+    const shouldReset: boolean = isParamsChanged || isPageSizeChanged
+
     const currentPage: number = yield select(getPage)
-    const nextPage: number = isPageSizeChanged
-      ? 1
-      : action.payload?.page || currentPage
+    const nextPage: number = shouldReset ? 1 : action.payload?.page || currentPage
 
     const movies: Movie[] = yield select(getMovies)
 
-    if (isPageSizeChanged || movies.length < nextPage * nextPageSize) {
-      const result: Movie[] = yield call(makeRequest, nextPage, nextPageSize)
+    if (shouldReset || movies.length < nextPage * nextPageSize) {
+      const result: FetchMoviesResponse = yield call(makeRequest, {
+        page: nextPage,
+        limit: nextPageSize,
+        genre: params.genre,
+        titleType: params.type,
+        year: params.year,
+      })
 
-      if (isPageSizeChanged) {
-        yield put(SetMoviesActionCreator(result))
+      if (shouldReset) {
+        yield put(SetMoviesActionCreator(result.results))
       } else {
-        yield put(AddMoviesActionCreator(result))
+        yield put(AddMoviesActionCreator(result.results))
       }
+
+      yield put(SetNextUrlActionCreator(result.next))
     }
 
     yield put(SetPageActionCreator(nextPage))
