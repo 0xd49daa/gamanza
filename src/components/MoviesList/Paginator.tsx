@@ -5,13 +5,14 @@ import {
   SetPageAndRefetchActionCreator,
   SetPageSizeAndRefetchActionCreator,
 } from "../../actions"
-import { getPage, getPageSize } from "../../selectors"
+import { getMovies, getPage, getPageSize } from "../../selectors"
 
 export default function Paginator() {
   const dispatch = useDispatch()
 
   const page = useSelector(getPage)
   const pageSize = useSelector(getPageSize)
+  const movies = useSelector(getMovies)
 
   const handleChangePage = useCallback(
     (_: unknown, newPage: number) => {
@@ -30,11 +31,12 @@ export default function Paginator() {
   return (
     <TablePagination
       component={"div"}
-      count={-1}
+      count={page * pageSize < movies.length ? movies.length : -1}
       page={page - 1}
       onPageChange={handleChangePage}
       rowsPerPage={pageSize}
       onRowsPerPageChange={handleChangeRowsPerPage}
+      rowsPerPageOptions={[10, 25, 50]}
     />
   )
 }

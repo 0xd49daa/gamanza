@@ -10,7 +10,9 @@ export const FetchMoviesActionCreator = createAction<
   FetchMoviesParams | undefined
 >("movies/fetchMovies")
 
-export const AddMoviesActionCreator = createAction<Movie[]>("movies/addMovie")
+export const AddMoviesActionCreator = createAction<Movie[]>("movies/addMovies")
+export const SetMoviesActionCreator = createAction<Movie[]>("movies/setMovies")
+
 export const SetPageAndRefetchActionCreator = createAction<number>(
   "movies/setPageAndRefetch"
 )

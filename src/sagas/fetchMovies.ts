@@ -1,7 +1,13 @@
 import { call, put, select } from "redux-saga/effects"
-import { AddMoviesActionCreator, FetchMoviesActionCreator } from "../actions"
-import { FetchMoviesResponse } from "../types"
-import { getPage, getPageSize } from "../selectors"
+import {
+  AddMoviesActionCreator,
+  FetchMoviesActionCreator,
+  SetMoviesActionCreator,
+  SetPageActionCreator,
+  SetPageSizeActionCreator,
+} from "../actions"
+import { FetchMoviesResponse, Movie } from "../types"
+import { getMovies, getPage, getPageSize } from "../selectors"
 
 const options = {
   method: "GET",
@@ -11,23 +17,46 @@ const options = {
   },
 }
 
+async function makeRequest(page: number, pageSize: number) {
+  const url = new URL("https://moviesdatabase.p.rapidapi.com/titles")
+  url.search = new URLSearchParams({
+    limit: pageSize.toString(),
+    page: page.toString(),
+  }).toString()
+
+  const response: Response = await fetch(url, options)
+  const result: FetchMoviesResponse = await response.json()
+
+  return result.results
+}
+
 export default function* fetchMovies(
   action: ReturnType<typeof FetchMoviesActionCreator>
 ) {
   try {
-    const page: number = action.payload?.page || (yield select(getPage))
-    const pageSize: number =
-      action.payload?.pageSize || (yield select(getPageSize))
+    const currentPageSize: number = yield select(getPageSize)
+    const nextPageSize: number = action.payload?.pageSize || currentPageSize
+    const isPageSizeChanged: boolean = nextPageSize !== currentPageSize
 
-    const url = new URL("https://moviesdatabase.p.rapidapi.com/titles")
-    url.search = new URLSearchParams({
-      limit: pageSize.toString(),
-      page: page.toString(),
-    }).toString()
+    const currentPage: number = yield select(getPage)
+    const nextPage: number = isPageSizeChanged
+      ? 1
+      : action.payload?.page || currentPage
 
-    const response: Response = yield call<any>(fetch, url, options)
-    const result: FetchMoviesResponse = yield call(response.json.bind(response))
-    yield put(AddMoviesActionCreator(result.results))
+    const movies: Movie[] = yield select(getMovies)
+
+    if (isPageSizeChanged || movies.length < nextPage * nextPageSize) {
+      const result: Movie[] = yield call(makeRequest, nextPage, nextPageSize)
+
+      if (isPageSizeChanged) {
+        yield put(SetMoviesActionCreator(result))
+      } else {
+        yield put(AddMoviesActionCreator(result))
+      }
+    }
+
+    yield put(SetPageActionCreator(nextPage))
+    yield put(SetPageSizeActionCreator(nextPageSize))
   } catch (error) {
     console.log("error", error)
   }
