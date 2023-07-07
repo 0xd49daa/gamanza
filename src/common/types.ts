@@ -24,8 +24,6 @@ export type FetchMoviesResponse = {
 }
 
 export type State = {
-  page: number
-  pageSize: number
   movies: Movie[]
   nextUrl: string | null
 }

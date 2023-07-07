@@ -1,14 +1,12 @@
 import { createReducer } from "@reduxjs/toolkit"
-import { State } from "./types"
+import { State } from "./types.ts"
 import {
   AddMoviesActionCreator,
   SetMoviesActionCreator,
   SetNextUrlActionCreator,
-  SetPageActionCreator,
-  SetPageSizeActionCreator,
-} from "./actions"
+} from "./actions.ts"
 
-const initialState = { page: 1, pageSize: 10, movies: [], nextUrl: null } as State
+const initialState = { movies: [], nextUrl: null } as State
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(AddMoviesActionCreator, (state, action) => {
@@ -16,12 +14,6 @@ const reducer = createReducer(initialState, (builder) => {
   })
   builder.addCase(SetMoviesActionCreator, (state, action) => {
     state.movies = action.payload
-  })
-  builder.addCase(SetPageActionCreator, (state, action) => {
-    state.page = action.payload
-  })
-  builder.addCase(SetPageSizeActionCreator, (state, action) => {
-    state.pageSize = action.payload
   })
   builder.addCase(SetNextUrlActionCreator, (state, action) => {
     state.nextUrl = action.payload

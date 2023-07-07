@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit"
 
-import rootReducer from "./reducer"
+import rootReducer from "./common/reducer.ts"
 
 import createSagaMiddleware from "redux-saga"
 
-import rootSaga from "./sagas/sagas"
+import rootSaga from "./sagas"
 
 import logger from "redux-logger"
 

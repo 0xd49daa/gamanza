@@ -1,90 +1,43 @@
-import { Button, Grid, SelectChangeEvent, TextField } from "@mui/material"
-import useSearchParamsValues from "./hooks/useSearchParamValues"
-import { ChangeEvent, useCallback } from "react"
+import { Button, Grid } from "@mui/material"
+import { useCallback } from "react"
+import { useParams } from "react-router-dom"
+import usePageNavigation from "../../common/hooks/usePageNavigation.ts"
 import CommonSelectConfig from "./CommonSelect"
-import { useDispatch } from "react-redux"
-import { FetchMoviesActionCreator } from "../../actions"
-
-export const DEFINITIONS = [
-  {
-    key: "genre",
-    defaultValue: "",
-  },
-  {
-    key: "type",
-    defaultValue: "",
-  },
-  {
-    key: "year",
-    defaultValue: "",
-  },
-]
+import YearField from "./YearField.tsx"
 
 const GenreSelect = CommonSelectConfig("/titles/utils/genres", "Genre")
 const TypeSelect = CommonSelectConfig("/titles/utils/titleTypes", "Type")
 
 export default function SearchPanel() {
-  const dispatch = useDispatch()
-  const [values, setValues] = useSearchParamsValues(DEFINITIONS)
+  const navigateWithParams = usePageNavigation()
+  const params = useParams()
 
-  const handleGenreChange = useCallback(
-    (event: SelectChangeEvent<string | null>) => {
-      setValues({ genre: event.target.value })
+  const handleChange = useCallback(
+    (field: string, event: any) => {
+      navigateWithParams({ [field]: event.target.value, page: "1" })
     },
-    [setValues]
-  )
-
-  const handleTypeChange = useCallback(
-    (event: SelectChangeEvent<string | null>) => {
-      setValues({ type: event.target.value })
-    },
-    [setValues]
-  )
-
-  const handleYearChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setValues({ year: event.target.value })
-    },
-    [setValues]
+    [navigateWithParams]
   )
 
   const handleClearSearch = useCallback(() => {
-    setValues({
-      genre: "",
-      type: "",
-      year: "",
+    navigateWithParams({
+      genre: undefined,
+      type: undefined,
+      year: undefined,
+      page: "1",
     })
-    dispatch(FetchMoviesActionCreator())
-  }, [setValues])
-
-  const handleApplySearch = useCallback(() => {
-    dispatch(FetchMoviesActionCreator())
-  }, [dispatch])
+  }, [navigateWithParams])
 
   return (
     <Grid container sx={{ padding: "20px" }} gap={"20px"}>
       <Grid item>
-        <GenreSelect value={values.genre} onChange={handleGenreChange} />
+        <GenreSelect value={params.genre || ""} onChange={handleChange.bind(null, "genre")} />
       </Grid>
       <Grid item>
-        <TypeSelect value={values.type} onChange={handleTypeChange} />
+        <TypeSelect value={params.type || ""} onChange={handleChange.bind(null, "type")} />
       </Grid>
       <Grid item>
-        <TextField
-          label="Year"
-          size="small"
-          value={values.year}
-          onChange={handleYearChange}
-          sx={{ width: "200px" }}
-          inputProps={{
-            type: "number",
-          }}
-        />
-      </Grid>
-      <Grid>
-        <Button variant="contained" onClick={handleApplySearch}>
-          Apply Search
-        </Button>
+        <YearField value={params.year || ""} onChange={handleChange.bind(null, "year")} />
       </Grid>
       <Grid>
         <Button onClick={handleClearSearch}>Clear Search</Button>

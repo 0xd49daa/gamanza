@@ -4,12 +4,11 @@ import {
   FetchMoviesActionCreator,
   SetMoviesActionCreator,
   SetNextUrlActionCreator,
-  SetPageActionCreator,
-  SetPageSizeActionCreator,
-} from "../actions"
-import { FetchMoviesResponse, Movie } from "../types"
-import { getMovies, getPage, getPageSize } from "../selectors"
-import { cleanUpObject, getSearchParams, isEqual } from "../utils"
+} from "../common/actions.ts"
+import { FetchMoviesResponse, Movie } from "../common/types.ts"
+import { getMovies } from "../common/selectors.ts"
+import { cleanUpObject, getSearchParams, isEqual } from "../common/utils.ts"
+import { DEFAULT_PAGE_SIZE } from "../common/constants.ts"
 
 const options = {
   method: "GET",
@@ -29,27 +28,26 @@ async function makeRequest(searchParams: any) {
   return result
 }
 
-let previous: any = null
+let previousParams: any = {}
+let previousPage = 1
 
 export default function* fetchMovies(action: ReturnType<typeof FetchMoviesActionCreator>) {
   try {
-    const params = getSearchParams()
-    const isParamsChanged = !previous || !isEqual(params, previous)
+    const { page, ...params } = action.payload
 
-    previous = params
+    const isParamsChanged = !isEqual(params, previousParams)
 
-    const currentPageSize: number = yield select(getPageSize)
-    const nextPageSize: number = action.payload?.pageSize || currentPageSize
-    const isPageSizeChanged: boolean = nextPageSize !== currentPageSize
+    console.log("isParamsChanged", isParamsChanged, "previousParams", previousParams, "params", params)
 
-    const shouldReset: boolean = isParamsChanged || isPageSizeChanged
+    previousParams = params
 
-    const currentPage: number = yield select(getPage)
-    const nextPage: number = shouldReset ? 1 : action.payload?.page || currentPage
+    const nextPageSize: number =
+      action.payload?.pageSize ?? previousParams.previousPageSize ?? DEFAULT_PAGE_SIZE
+    const nextPage: number = isParamsChanged ? 1 : action.payload?.page ?? previousPage
 
     const movies: Movie[] = yield select(getMovies)
 
-    if (shouldReset || movies.length < nextPage * nextPageSize) {
+    if (isParamsChanged || movies.length < nextPage * nextPageSize) {
       const result: FetchMoviesResponse = yield call(makeRequest, {
         page: nextPage,
         limit: nextPageSize,
@@ -58,7 +56,7 @@ export default function* fetchMovies(action: ReturnType<typeof FetchMoviesAction
         year: params.year,
       })
 
-      if (shouldReset) {
+      if (isParamsChanged) {
         yield put(SetMoviesActionCreator(result.results))
       } else {
         yield put(AddMoviesActionCreator(result.results))
@@ -67,8 +65,7 @@ export default function* fetchMovies(action: ReturnType<typeof FetchMoviesAction
       yield put(SetNextUrlActionCreator(result.next))
     }
 
-    yield put(SetPageActionCreator(nextPage))
-    yield put(SetPageSizeActionCreator(nextPageSize))
+    previousPage = nextPage
   } catch (error) {
     console.log("error", error)
   }
