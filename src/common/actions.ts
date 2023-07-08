@@ -13,3 +13,6 @@ export const FetchMoviesActionCreator = createAction<FetchMoviesParams>("movies/
 export const AddMoviesActionCreator = createAction<Movie[]>("movies/addMovies")
 export const SetMoviesActionCreator = createAction<Movie[]>("movies/setMovies")
 export const SetNextUrlActionCreator = createAction<string>("movies/setNextUrl")
+export const SetErrorActionCreator = createAction<unknown>("movies/setError")
+export const SetLoadingActionCreator = createAction<boolean>("movies/setLoading")
+export const ResetErrorActionCreator = createAction("movies/resetError")

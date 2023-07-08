@@ -7,22 +7,14 @@ import {
 } from "../common/actions.ts"
 import { FetchMoviesResponse, Movie } from "../common/types.ts"
 import { getMovies } from "../common/selectors.ts"
-import { cleanUpObject, getSearchParams, isEqual } from "../common/utils.ts"
-import { DEFAULT_PAGE_SIZE } from "../common/constants.ts"
-
-const options = {
-  method: "GET",
-  headers: {
-    "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,
-    "X-RapidAPI-Host": "moviesdatabase.p.rapidapi.com",
-  },
-}
+import { cleanUpObject, isEqual } from "../common/utils.ts"
+import { DEFAULT_PAGE_SIZE, REQUEST_OPTIONS } from "../common/constants.ts"
 
 async function makeRequest(searchParams: any) {
   const url = new URL("/titles", import.meta.env.VITE_API_URL)
   url.search = new URLSearchParams(cleanUpObject(searchParams)).toString()
 
-  const response: Response = await fetch(url, options)
+  const response: Response = await fetch(url, REQUEST_OPTIONS)
   const result: FetchMoviesResponse = await response.json()
 
   return result
@@ -37,13 +29,10 @@ export default function* fetchMovies(action: ReturnType<typeof FetchMoviesAction
 
     const isParamsChanged = !isEqual(params, previousParams)
 
-    console.log("isParamsChanged", isParamsChanged, "previousParams", previousParams, "params", params)
-
     previousParams = params
 
-    const nextPageSize: number =
-      action.payload?.pageSize ?? previousParams.previousPageSize ?? DEFAULT_PAGE_SIZE
-    const nextPage: number = isParamsChanged ? 1 : action.payload?.page ?? previousPage
+    const nextPageSize: number = params.pageSize ?? previousParams.previousPageSize ?? DEFAULT_PAGE_SIZE
+    const nextPage: number = isParamsChanged ? 1 : page ?? previousPage
 
     const movies: Movie[] = yield select(getMovies)
 
