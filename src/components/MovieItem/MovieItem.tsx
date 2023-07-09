@@ -23,8 +23,6 @@ export default function MovieItem() {
   const navigate = useNavigate()
   const { movie, loading } = useMovie(id)
 
-  console.log(movie)
-
   return (
     <>
       <Box sx={{ padding: "8px" }}>

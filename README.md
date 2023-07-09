@@ -2,6 +2,12 @@
 
 [DEMO](https://gamanza.vercel.app/)
 
+## Run in dev mode
+
+* Create `.env` file in the root folder of the project. You can use `.env.example` as a template. Fill in your credentials.
+* Run `yarn dev`
+
+
 ## Stack
 
 React, Redux + redux-saga, TypeScript

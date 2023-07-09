@@ -2,6 +2,7 @@ import { call, put, select } from "redux-saga/effects"
 import {
   AddMoviesActionCreator,
   FetchMoviesActionCreator,
+  SetErrorActionCreator,
   SetMoviesActionCreator,
   SetNextUrlActionCreator,
 } from "../common/actions.ts"
@@ -56,6 +57,6 @@ export default function* fetchMovies(action: ReturnType<typeof FetchMoviesAction
 
     previousPage = nextPage
   } catch (error) {
-    console.log("error", error)
+    yield put(SetErrorActionCreator(error))
   }
 }

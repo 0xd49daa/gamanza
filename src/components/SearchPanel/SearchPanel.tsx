@@ -1,7 +1,11 @@
-import { Button, Grid } from "@mui/material"
+import Download from "@mui/icons-material/Download"
+import { Button, Grid, IconButton } from "@mui/material"
 import { useCallback } from "react"
+import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import usePageNavigation from "../../common/hooks/usePageNavigation.ts"
+import { getMovies } from "../../common/selectors.ts"
+import { downLoadFile } from "../../common/utils.ts"
 import CommonSelectConfig from "./CommonSelect"
 import YearField from "./YearField.tsx"
 
@@ -11,6 +15,7 @@ const TypeSelect = CommonSelectConfig("/titles/utils/titleTypes", "Type")
 export default function SearchPanel() {
   const navigateWithParams = usePageNavigation()
   const params = useParams()
+  const allMovies = useSelector(getMovies)
 
   const handleChange = useCallback(
     (field: string, event: any) => {
@@ -18,6 +23,14 @@ export default function SearchPanel() {
     },
     [navigateWithParams]
   )
+
+  const handleDownload = useCallback(() => {
+    const file = new File([JSON.stringify(allMovies)], "movies.json", {
+      type: "application/json",
+    })
+    const url = URL.createObjectURL(file)
+    downLoadFile(url)
+  }, [allMovies])
 
   const handleClearSearch = useCallback(() => {
     navigateWithParams({
@@ -39,8 +52,14 @@ export default function SearchPanel() {
       <Grid item>
         <YearField value={params.year || ""} onChange={handleChange.bind(null, "year")} />
       </Grid>
-      <Grid>
+      <Grid item>
         <Button onClick={handleClearSearch}>Clear Search</Button>
+      </Grid>
+      <Grid item flexGrow={1}></Grid>
+      <Grid item>
+        <IconButton onClick={handleDownload} title="Download movie list">
+          <Download />
+        </IconButton>
       </Grid>
     </Grid>
   )

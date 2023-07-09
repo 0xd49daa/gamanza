@@ -49,3 +49,12 @@ export function buildListUrl(options: NavigateOptions) {
 
   return "/" + segments.join("/")
 }
+
+export function downLoadFile(url: string) {
+  const anchorElement = document.createElement("a")
+  document.body.appendChild(anchorElement)
+  anchorElement.style.display = "none"
+  anchorElement.href = url
+  anchorElement.download = "movies.json"
+  anchorElement.click()
+}
