@@ -1,5 +1,5 @@
 import { TablePagination } from "@mui/material"
-import { ChangeEvent, memo, useCallback } from "react"
+import { ChangeEvent, useCallback } from "react"
 
 type PaginatorProps = {
   page: number
@@ -11,20 +11,20 @@ type PaginatorProps = {
 }
 
 function Paginator(props: PaginatorProps) {
-  const { page, pageSize } = props
+  const { page, pageSize, onPageChange, onRowsPerPageChange } = props
 
   const handleChangePage = useCallback(
     (_: unknown, newPage: number) => {
-      props.onPageChange((newPage + 1).toString())
+      onPageChange((newPage + 1).toString())
     },
-    [props.onPageChange]
+    [onPageChange]
   )
 
   const handleChangeRowsPerPage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      props.onRowsPerPageChange(event.target.value)
+      onRowsPerPageChange(event.target.value)
     },
-    [props.onRowsPerPageChange]
+    [onRowsPerPageChange]
   )
 
   const count = page * pageSize < props.totalItems || !props.hasNextPage ? props.totalItems : -1
@@ -42,4 +42,4 @@ function Paginator(props: PaginatorProps) {
   )
 }
 
-export default memo(Paginator)
+export default Paginator

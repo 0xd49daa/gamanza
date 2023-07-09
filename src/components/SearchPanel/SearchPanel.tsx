@@ -9,8 +9,8 @@ import { downLoadFile } from "../../common/utils.ts"
 import CommonSelectConfig from "./CommonSelect"
 import YearField from "./YearField.tsx"
 
-const GenreSelect = CommonSelectConfig("/titles/utils/genres", "Genre")
-const TypeSelect = CommonSelectConfig("/titles/utils/titleTypes", "Type")
+const GenreSelect = CommonSelectConfig("genres", "Genre")
+const TypeSelect = CommonSelectConfig("types", "Type")
 
 export default function SearchPanel() {
   const navigateWithParams = usePageNavigation()

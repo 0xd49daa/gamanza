@@ -9,6 +9,7 @@ type YearFieldProps = {
 
 export default function YearField(props: YearFieldProps) {
   const [value, setValue] = useState(props.value)
+  const { onChange } = props
 
   const debouncedChangeHandler = useMemo(
     () =>
@@ -17,9 +18,9 @@ export default function YearField(props: YearFieldProps) {
         if (isNaN(Number(value)) || Number(value) < 1896) {
           return
         }
-        props.onChange(event)
+        onChange(event)
       }, 500),
-    [props.onChange]
+    [onChange]
   )
 
   useEffect(() => {

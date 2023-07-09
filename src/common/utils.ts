@@ -1,3 +1,5 @@
+import { REQUEST_OPTIONS } from "./constants"
+
 export function getSearchParams() {
   const url: URL = new URL(window.location.href)
   const params: URLSearchParams = url.searchParams
@@ -57,4 +59,11 @@ export function downLoadFile(url: string) {
   anchorElement.href = url
   anchorElement.download = "movies.json"
   anchorElement.click()
+}
+
+export async function makeRequest<T>(urlPart: string): Promise<T> {
+  const url = new URL(urlPart, import.meta.env.VITE_API_URL)
+  const response: Response = await fetch(url, REQUEST_OPTIONS)
+  const result = await response.json()
+  return result.results as T
 }

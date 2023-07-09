@@ -2,40 +2,39 @@ import FormControl from "@mui/material/FormControl"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
 import Select, { SelectChangeEvent } from "@mui/material/Select"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { FetchFieldActionCreator } from "../../common/actions"
+import { getField } from "../../common/selectors"
+import { LoadField } from "../../common/types"
 
 type SelectProps = {
   value: string | null
   onChange: (value: SelectChangeEvent<string | null>) => void
 }
 
-export default function CommonSelectConfig(url: string, label: string) {
+export default function CommonSelectConfig(field: LoadField, label: string) {
   return function CommonSelect(props: SelectProps) {
-    const [options, setOptions] = useState<string[]>([])
+    const options = useSelector(getField(field))
+    const dispatch = useDispatch()
 
     useEffect(() => {
-      async function fetchGenre() {
-        const response = await fetch(new URL(url, import.meta.env.VITE_API_URL), {
-          method: "GET",
-          headers: {
-            "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "moviesdatabase.p.rapidapi.com",
-          },
-        })
-        const data = await response.json()
-        setOptions(data.results)
+      if (!options) {
+        dispatch(FetchFieldActionCreator(field))
       }
+    }, [dispatch, options])
 
-      fetchGenre()
-    }, [])
+    if (!options) {
+      return null
+    }
 
     return (
       <FormControl sx={{ width: "200px" }}>
         <InputLabel size="small">{label}</InputLabel>
         <Select size="small" label={label} value={props.value} onChange={props.onChange}>
-          {options.map((option) => {
+          {options.map((option, index) => {
             return (
-              <MenuItem key={option} value={option}>
+              <MenuItem key={index} value={option || undefined}>
                 {option}
               </MenuItem>
             )

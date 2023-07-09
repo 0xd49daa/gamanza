@@ -1,22 +1,11 @@
 import { useEffect, useState } from "react"
-import { REQUEST_OPTIONS } from "../../../common/constants"
-import { Movie, Episode } from "../../../common/types"
 import { useDispatch, useSelector } from "react-redux"
 import { SetErrorActionCreator } from "../../../common/actions"
 import { getMovie } from "../../../common/selectors"
+import { Episode, Movie, Seasons } from "../../../common/types"
+import { makeRequest } from "../../../common/utils"
 
-async function makeRequest<T>(urlPart: string): Promise<T> {
-  const url = new URL(urlPart, import.meta.env.VITE_API_URL)
-  const response: Response = await fetch(url, REQUEST_OPTIONS)
-  const result = await response.json()
-  return result.results as T
-}
-
-type Seasons = {
-  [key: string]: number
-}
-
-type ExtendedMovie = Movie & { seasons: Seasons | null }
+type ExtendedMovie = Movie & { seasons?: Seasons }
 
 export default function useMovie(id: string | undefined) {
   const [loading, setLoading] = useState(false)
@@ -33,7 +22,7 @@ export default function useMovie(id: string | undefined) {
           dispatch(SetErrorActionCreator(null))
 
           const movie = cachedMovie ?? (await makeRequest<Movie>(`/titles/${id}`))
-          let seasons = null
+          let seasons
 
           if (movie.titleType.isSeries) {
             const episodes = await makeRequest<Episode[]>(`/titles/series/${id}`)
@@ -46,7 +35,7 @@ export default function useMovie(id: string | undefined) {
           }
           setMovie({
             ...movie,
-            seasons: seasons || null,
+            seasons,
           })
           setLoading(false)
         }

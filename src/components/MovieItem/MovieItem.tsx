@@ -2,10 +2,10 @@ import ArrowBack from "@mui/icons-material/ArrowBack"
 import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
 import Typography from "@mui/material/Typography"
+import { styled } from "@mui/material/styles"
 import { useNavigate, useParams } from "react-router-dom"
 import useMovie from "./hooks/useMovie"
-import { styled } from "@mui/material/styles"
-import { Card } from "@mui/material"
+import MovieSeasons from "./MovieSeasons"
 
 const ImageContainer = styled("div")({
   width: "300px",
@@ -38,18 +38,7 @@ export default function MovieItem() {
           <Typography variant="h4" component="h1">
             {movie?.titleText.text} / {movie?.releaseYear?.year}
           </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "20px", padding: "20px" }}>
-            {movie?.seasons
-              ? Object.keys(movie.seasons).map((seasonNumber) => (
-                  <Card key={seasonNumber} sx={{ padding: "10px" }}>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      Season {seasonNumber}
-                    </Typography>
-                    <Typography>{movie.seasons?.[seasonNumber]} Episodes</Typography>
-                  </Card>
-                ))
-              : null}
-          </Box>
+          <MovieSeasons seasons={movie?.seasons} />
         </Box>
       )}
     </>

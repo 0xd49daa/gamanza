@@ -41,4 +41,12 @@ export type State = {
   movies: Movie[]
   nextUrl: string | null
   error: unknown
+  genres: (string | null)[] | null
+  types: (string | null)[] | null
+}
+
+export type LoadField = "genres" | "types"
+
+export type Seasons = {
+  [key: string]: number
 }

@@ -5,9 +5,10 @@ import {
   SetMoviesActionCreator,
   SetNextUrlActionCreator,
   SetErrorActionCreator,
+  SetFieldActionCreator,
 } from "./actions.ts"
 
-const initialState = { movies: [], nextUrl: null, error: null } as State
+const initialState = { movies: [], nextUrl: null, error: null, genres: null, types: null } as State
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(AddMoviesActionCreator, (state, action) => {
@@ -21,6 +22,9 @@ const reducer = createReducer(initialState, (builder) => {
   })
   builder.addCase(SetErrorActionCreator, (state, action) => {
     state.error = action.payload
+  })
+  builder.addCase(SetFieldActionCreator, (state, action) => {
+    state[action.payload.field] = action.payload.value
   })
 })
 
