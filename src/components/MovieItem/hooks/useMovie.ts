@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { REQUEST_OPTIONS } from "../../../common/constants"
 import { Movie, Episode } from "../../../common/types"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { SetErrorActionCreator } from "../../../common/actions"
+import { getMovie } from "../../../common/selectors"
 
 async function makeRequest<T>(urlPart: string): Promise<T> {
   const url = new URL(urlPart, import.meta.env.VITE_API_URL)
@@ -22,6 +23,8 @@ export default function useMovie(id: string | undefined) {
   const [movie, setMovie] = useState<ExtendedMovie | undefined>(undefined)
   const dispatch = useDispatch()
 
+  const cachedMovie = useSelector(getMovie(id))
+
   useEffect(() => {
     async function fetchMovie() {
       try {
@@ -29,7 +32,7 @@ export default function useMovie(id: string | undefined) {
           setLoading(true)
           dispatch(SetErrorActionCreator(null))
 
-          const movie = await makeRequest<Movie>(`/titles/${id}`)
+          const movie = cachedMovie ?? (await makeRequest<Movie>(`/titles/${id}`))
           let seasons = null
 
           if (movie.titleType.isSeries) {
@@ -54,7 +57,7 @@ export default function useMovie(id: string | undefined) {
     }
 
     fetchMovie()
-  }, [id])
+  }, [cachedMovie, id])
 
   return { movie, loading }
 }
