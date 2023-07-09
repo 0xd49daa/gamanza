@@ -36,7 +36,7 @@ export default function MovieItem() {
             <StyledImage src={movie?.primaryImage?.url} alt={movie?.primaryImage?.caption?.plainText} />
           </ImageContainer>
           <Typography variant="h4" component="h1">
-            {movie?.titleText.text} / {movie?.releaseYear?.year}
+            {movie?.titleText?.text} / {movie?.releaseYear?.year}
           </Typography>
           <MovieSeasons seasons={movie?.seasons} />
         </Box>

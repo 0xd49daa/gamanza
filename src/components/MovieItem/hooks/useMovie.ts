@@ -24,7 +24,7 @@ export default function useMovie(id: string | undefined) {
           const movie = cachedMovie ?? (await makeRequest<Movie>(`/titles/${id}`))
           let seasons
 
-          if (movie.titleType.isSeries) {
+          if (movie.titleType?.isSeries) {
             const episodes = await makeRequest<Episode[]>(`/titles/series/${id}`)
 
             seasons = episodes.reduce((acc, episode) => {

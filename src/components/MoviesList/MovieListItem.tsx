@@ -17,8 +17,8 @@ export default function MovieListItem(props: MovieListItemProps) {
   return (
     <ListItemButton onClick={handleClick}>
       <ListItemText
-        primary={props.movie.titleText.text}
-        secondary={`${props.movie.titleType.id} / ${props.movie.releaseYear.year}`}
+        primary={props.movie.titleText?.text}
+        secondary={`${props.movie.titleType?.id} / ${props.movie.releaseYear?.year}`}
       />
     </ListItemButton>
   )

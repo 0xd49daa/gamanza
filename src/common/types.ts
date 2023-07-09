@@ -20,12 +20,12 @@ type TitleType = {
 
 export type Movie = {
   id: string
-  primaryImage: PrimaryImage | null
-  titleText: {
+  primaryImage?: PrimaryImage
+  titleText?: {
     text: string
   }
-  titleType: TitleType
-  releaseYear: {
+  titleType?: TitleType
+  releaseYear?: {
     year: number
   }
 }
