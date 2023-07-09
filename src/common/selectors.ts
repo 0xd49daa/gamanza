@@ -11,3 +11,7 @@ export function getMovie(id: string | undefined) {
 export function getNextUrl(state: State) {
   return state.nextUrl
 }
+
+export function getError(state: State) {
+  return state.error
+}

@@ -23,6 +23,8 @@ It's worth noting it's deprecated as of now. There are some other options like `
 Since we want advanced natigation with history, all states regarding page, page size and filters are stored in url. Meenwhile, the data to display is stored in redux store.
 According to the documentation, they do not recommend to sync redux store with url, so I did not do that.
 
+Fetching data for single movie is implemented in a custom hook. This data is not to be used in other parts of the application so no reason we store or handle it via redux.
+
 ## Pagination
 
 I used Material UI `TablePagination` component as it show in the requirements. API is provide as with backend pagination without exactly number of items available.

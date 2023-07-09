@@ -27,6 +27,8 @@ export default function useMovie(id: string | undefined) {
       try {
         if (id) {
           setLoading(true)
+          dispatch(SetErrorActionCreator(null))
+
           const movie = await makeRequest<Movie>(`/titles/${id}`)
           let seasons = null
 

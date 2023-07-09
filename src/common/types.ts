@@ -40,4 +40,5 @@ export type FetchMoviesResponse = {
 export type State = {
   movies: Movie[]
   nextUrl: string | null
+  error: unknown
 }

@@ -4,12 +4,17 @@ import AppBar from "@mui/material/AppBar"
 import Container from "@mui/material/Container"
 import Toolbar from "@mui/material/Toolbar"
 import { Link } from "react-router-dom"
+import Alert from "@mui/material/Alert"
+import { useSelector } from "react-redux"
+import { getError } from "../../common/selectors"
 
 export type LayoutProps = {
   children: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const error = useSelector(getError)
+
   return (
     <Container maxWidth="lg">
       <AppBar position="static">
@@ -23,6 +28,11 @@ export default function Layout({ children }: LayoutProps) {
         </Toolbar>
       </AppBar>
       <Paper sx={{ borderRadius: 0 }}>{children}</Paper>
+      {error ? (
+        <Alert variant="filled" severity="error">
+          There is an error while fetching data from the server. Please try to refresh the page.
+        </Alert>
+      ) : null}
     </Container>
   )
 }

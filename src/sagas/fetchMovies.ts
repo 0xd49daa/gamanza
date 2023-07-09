@@ -26,6 +26,8 @@ let previousPage = 1
 
 export default function* fetchMovies(action: ReturnType<typeof FetchMoviesActionCreator>) {
   try {
+    yield put(SetErrorActionCreator(null))
+
     const { page, ...params } = action.payload
 
     const isParamsChanged = !isEqual(params, previousParams)
