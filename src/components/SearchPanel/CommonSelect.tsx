@@ -15,16 +15,13 @@ export default function CommonSelectConfig(url: string, label: string) {
 
     useEffect(() => {
       async function fetchGenre() {
-        const response = await fetch(
-          new URL(url, import.meta.env.VITE_API_URL),
-          {
-            method: "GET",
-            headers: {
-              "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,
-              "X-RapidAPI-Host": "moviesdatabase.p.rapidapi.com",
-            },
-          }
-        )
+        const response = await fetch(new URL(url, import.meta.env.VITE_API_URL), {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "moviesdatabase.p.rapidapi.com",
+          },
+        })
         const data = await response.json()
         setOptions(data.results)
       }
@@ -34,13 +31,8 @@ export default function CommonSelectConfig(url: string, label: string) {
 
     return (
       <FormControl sx={{ width: "200px" }}>
-        <InputLabel size="small">Genre</InputLabel>
-        <Select
-          size="small"
-          label={label}
-          value={props.value}
-          onChange={props.onChange}
-        >
+        <InputLabel size="small">{label}</InputLabel>
+        <Select size="small" label={label} value={props.value} onChange={props.onChange}>
           {options.map((option) => {
             return (
               <MenuItem key={option} value={option}>

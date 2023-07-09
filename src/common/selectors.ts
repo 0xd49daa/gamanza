@@ -1,7 +1,7 @@
 import { State } from "./types.ts"
 
 export function getMovies(state: State) {
-  return state.movies
+  return state.movies || []
 }
 
 export function getMovie(id: string | undefined) {

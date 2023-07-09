@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography"
 import { useNavigate, useParams } from "react-router-dom"
 import useMovie from "./hooks/useMovie"
 import { styled } from "@mui/material/styles"
+import { Card } from "@mui/material"
 
 const ImageContainer = styled("div")({
   width: "300px",
@@ -39,6 +40,18 @@ export default function MovieItem() {
           <Typography variant="h4" component="h1">
             {movie?.titleText.text} / {movie?.releaseYear?.year}
           </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "20px", padding: "20px" }}>
+            {movie?.seasons
+              ? Object.keys(movie.seasons).map((seasonNumber) => (
+                  <Card key={seasonNumber} sx={{ padding: "10px" }}>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                      Season {seasonNumber}
+                    </Typography>
+                    <Typography>{movie.seasons?.[seasonNumber]} Episodes</Typography>
+                  </Card>
+                ))
+              : null}
+          </Box>
         </Box>
       )}
     </>

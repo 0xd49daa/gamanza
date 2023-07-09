@@ -4,13 +4,23 @@ import { useEffect, useMemo, useState } from "react"
 
 type YearFieldProps = {
   value: string
-  onChange: any
+  onChange: (value: string) => void
 }
 
 export default function YearField(props: YearFieldProps) {
   const [value, setValue] = useState(props.value)
 
-  const debouncedChangeHandler = useMemo(() => debounce(props.onChange, 500), [props.onChange])
+  const debouncedChangeHandler = useMemo(
+    () =>
+      debounce((event: any) => {
+        const value = event.target.value
+        if (isNaN(Number(value)) || Number(value) < 1896) {
+          return
+        }
+        props.onChange(event)
+      }, 500),
+    [props.onChange]
+  )
 
   useEffect(() => {
     return () => {
@@ -24,7 +34,7 @@ export default function YearField(props: YearFieldProps) {
 
   return (
     <TextField
-      label="Year"
+      label="Year (min 1896)"
       size="small"
       value={value}
       onChange={(e) => {
