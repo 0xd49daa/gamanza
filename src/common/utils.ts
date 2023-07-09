@@ -1,5 +1,3 @@
-import { Key } from "react"
-
 export function getSearchParams() {
   const url: URL = new URL(window.location.href)
   const params: URLSearchParams = url.searchParams
